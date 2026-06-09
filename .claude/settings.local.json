@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/home/mamadou-bah/.config/herd-lite/bin/php artisan *)",
+      "Bash(# Trouver l'URL correcte du projet *)",
+      "Read(//opt/lampp/htdocs/**)",
+      "Bash(composer require *)",
+      "Bash(php -m)",
+      "Bash(ln -sfn ../storage/app/public public/storage)"
+    ]
+  }
+}
