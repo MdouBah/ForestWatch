@@ -1,0 +1,103 @@
+# ============================================================
+#  FORESTWATCH — Infrastructure as Code (Render)
+#  Documentation : https://render.com/docs/infrastructure-as-code
+# ============================================================
+
+databases:
+  - name: forestwatch-db
+    databaseName: forestwatch
+    user: forestwatch_user
+    plan: free          # 256 MB RAM, 1 GB stockage
+    region: frankfurt   # le plus proche de la Guinée/Europe
+
+services:
+  - type: web
+    name: forestwatch
+    env: docker
+    plan: free          # 0.1 CPU, 512 MB RAM
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+
+    # ── Variables d'environnement ────────────────────────────
+    envVars:
+
+      # Application
+      - key: APP_NAME
+        value: FORESTWATCH
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true       # Render génère une clé unique
+
+      # URL publique (Render la définit automatiquement)
+      - key: APP_URL
+        fromService:
+          type: web
+          name: forestwatch
+          property: host
+          scheme: https
+
+      # ── Base de données PostgreSQL ───────────────────────
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: forestwatch-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: forestwatch-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: forestwatch-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: forestwatch-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: forestwatch-db
+          property: password
+
+      # ── Sessions & Cache ─────────────────────────────────
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: SESSION_LIFETIME
+        value: 480
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: sync
+
+      # ── Fichiers / Storage ───────────────────────────────
+      - key: FILESYSTEM_DISK
+        value: public
+
+      # ── Locale ──────────────────────────────────────────
+      - key: APP_LOCALE
+        value: fr
+      - key: APP_FALLBACK_LOCALE
+        value: fr
+
+      # ── JWT ──────────────────────────────────────────────
+      - key: JWT_SECRET
+        generateValue: true       # Render génère un secret unique
+      - key: JWT_TTL
+        value: 480                # 8 heures
+
+      # ── Logs ────────────────────────────────────────────
+      - key: LOG_CHANNEL
+        value: stderr             # Les logs vont dans Render dashboard
+      - key: LOG_LEVEL
+        value: warning
+
+      # ── Données de démo (mettre true au 1er déploiement) ─
+      - key: RUN_SEEDER
+        value: false
+
+    # ── Health check ─────────────────────────────────────────
+    healthCheckPath: /login

@@ -1,0 +1,44 @@
+# Environnement local
+.env
+.env.local
+.env.*.local
+
+# Dépendances (reconstruites dans Docker)
+/vendor
+/node_modules
+
+# Stockage local (monté en volume ou service cloud en prod)
+/storage/app/public/avatars/*
+/storage/app/public/rapports/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+!/storage/framework/cache/.gitignore
+!/storage/framework/sessions/.gitignore
+!/storage/framework/views/.gitignore
+!/storage/logs/.gitignore
+!/storage/app/.gitignore
+!/storage/app/public/.gitignore
+
+# Build frontend
+/public/hot
+/public/storage
+
+# Git
+/.git
+/.github
+
+# Tests
+/tests
+/phpunit.xml
+
+# IDE
+/.idea
+/.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
